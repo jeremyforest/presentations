@@ -1,0 +1,244 @@
+---
+title: "Dendrites as a biologically inspired approach to overcome catastrophic forgetting"
+author: "Jeremy Forest"
+date: 'October 19, 2023'
+format: 
+  revealjs:
+    incremental: false
+    fontsize: 18pt
+    smaller: false
+    theme: dark
+    slide-number: true
+    show-slide-number: all
+    preview-links: auto
+    self-contained: true
+revealjs-plugins:
+  - pointer
+toc: false
+number-sections: false
+editor:
+  render-on-save: true
+bibliography: 2023_ContinualAIUnconferenceTalk.bib
+---
+
+```{=html}
+<!-- Dendrites as a biologically inspired approach to overcome catastrophic forgetting
+Jeremy Forest
+August 18, 2023
+Keywords: dendrites, bio-inspired, continual learning 
+Dendrites constitute a major unit element of biological neurons and more generally biological neural networks. Their multiple properties have mostly been ignored by the broader neuroscience and machine learning communities due to their lack of conceptual usefulness. So far, the theoretical framework of dendrites has been more or less that of summarizing the synaptic input activity to the soma. However recent experiments in biology, computational modeling and artificial intelligence (AI) have shown that they possess more interesting properties than simply that of linearly summation of weighted synaptic inputs ; driving a renewed interest in their properties and building a strong case for their usefullness. While point neurons have shown tremendous capabilities in deep neural networks, they fail spectaculary in some settings that could be argued are fundamental towards more capable AI, notably in the case of continual learning where there is ongoing memory formation, maintenance and retrieval. While some advances have been made toward the goal of developing algorithms more robust to catastrophic forgetting and able to perform impressive memory-related abilities, we still have a long way to go until we reach the potential of biological networks. There is still much unknown in dendrites’ computational advantages and capabilities but dendritic-enabled unit models are emerging as a biologically-inspired alternative to typical point neuron better able to answer some of those challenging tasks. I will present some of the biological details as well as subtelties of dendrites computation in the brain; then reflect on how they can and are being translated to dit into continual learning research and applications. More precisely reflect on how dendrites have been shown to gate and direct the flow of information in neurons, integrate information over multiple timescales and lead to the emergence of sparse subnetworks.
+1 -->
+```
+
+## Point-neurons
+
+::: {layout-ncol="2"}
+-   Computes a linear weighted sum of its inputs, followed by a non-linearity
+
+![[@deng_rethinking_2020]](images/Deng2020_ANN.png){fig-align="center"}
+:::
+
+-   While historically biologically-inspired, they are very far from a biological neuron
+
+-   Point neurons are abstraction built to answer specific questions at a specific time
+
+-   From a 'fit to neuroscience data' point-of-vue, it's a bad model BUT
+
+-   The point neuron has found its usefullness since it has become the default unit model in ANN
+
+-   Most of the complexity is abstracted away for better computational efficiency.
+
+-   But this neuron abstraction coupled with the way we train deep nets has shown cases where they fail miserably
+
+    → continual learning and the catastrophic forgetting problem
+
+::: r-stack
+-   ***Which details matter and which don't ?***
+:::
+
+## Relevance of complexity (1)
+
+-   Multiple studies by many teams has point toward the importance of complexity both at the level of single neuron and in neural networks.
+
+-   Examples (non-exhaustive):
+
+    -   @payeur_burst-dependent_2021 : Burst-dependent synaptic plasticity can coordinate learning in hierarchical circuits
+
+        > when paired with short-term synaptic dynamics, regenerative activity in the apical dendrites, and synaptic plasticity in feedback pathways, a burst-dependent learning rule can solve challenging tasks that require deep network architectures. \[...\]well-known properties of dendrites, synapses, and synaptic plasticity are sufficient to enable sophisticated learning in hierarchical circuits.
+
+    -   @perez-nieves_neural_2021: Neural heterogeneity promotes robust learning
+
+        > the performance of spiking neural networks trained to carry out tasks of real-world difficulty, with varying degrees of heterogeneity, and found that it substantially improved task performance.
+
+## Relevance of complexity (2)
+
+-   @zeldenrust_efficient_2021: Efficient and robust coding in heterogeneous recurrent networks
+
+    > networks consisting of a heterogeneous population of different neuron types are both more efficient and more robust against correlated noise.
+
+-   @jones_might_2021: Might a Single Neuron Solve Interesting Machine Learning Problems Through Successive Computations on Its Dendritic Tree?
+
+    > simple model where the dendrite is implemented as a sequence of thresholded linear units. We manipulate the architecture of this model to investigate the impacts of binary branching constraints and repetition of synaptic inputs on neural computation. \[...\] models with such manipulations can perform well on machine learning tasks, such as Fashion MNIST or Extended MNIST. We find that model performance on these tasks is limited by binary tree branching and dendritic asymmetry and is improved by the repetition of synaptic inputs to different dendritic branches.
+
+## What are dendrites ?
+
+-   Dendrites are major elements of biological neurons
+
+-   They are projections from the cell's soma into the surrounding environment
+
+-   They make up most of the substrate of connections between cells (there can also be sub-structures called spines or not)
+
+-   Dendrites have extremely diverse morphologies
+
+![[@donohue_comparative_2008]](images/Donohue2008_dendritesmorphologies.png){width=50%}
+
+
+-   In biology structure and function are typically linked =\> there should be a dendritic function explaning this diversity
+
+## Conceptual usefullness of dendrites
+
+-   @beniaguev_single_2021 showed that a layer 5 pyramidal neuron I/O could be approximated using a 7 layers ANN composed of point neurons.
+
+![[@beniaguev_single_2021]](images/Beniaguev2021_L5pyras7layerANN.png){width=70%}
+
+
+-   However, no matter how deep an ANN is, it will always be subject to catastrophic forgetting.
+
+- **Hypothesis : Dendritic units can help minimize the catastrophic forgetting problem in continual learning while still maintaining a low compute overhead**
+
+## Dendrite properties (1) : coincidence detectors and information routing
+
+-   Dendrite can act as coincidence detectors.
+
+-   Differing information content is routed to different part of the dendritic arbor
+
+-   Leading to the potential emergence of functional subdomains
+
+::: {layout-ncol="3"}
+![[@spruston_pyramidal_2008]](images/Spruston2008_coincidencedetection.png){width=40%}
+
+![](images/poirazi2022talk_dendriterouting.png){width=120%}
+
+![[@major_active_2013]](images/major2012_dendritesrouting.png){width=80%}
+:::
+
+## Dendrite properties (2) : Linear and non-linear computations
+
+<!--# Lots of this is inspired by P.Poirazi talk at snufa 2022 https://www.youtube.com/watch?v=T3s-R4vXtZs&list=PL09WqqDbQWHFjkkXiQdOYC1wAdgSUMGxQ&index=7-->
+
+-   Neurons contains active or passive dendrites.
+
+-   Passive dendrites show only linear or sublinear input summation.
+
+-   Active dendrite can show supralinear outpout.
+
+- Same dendritic branch stimulation can results in linear or supra-linear output depending on stimulation conditions.
+
+::: {layout-ncol="3"}
+![[@ariav_submillisecond_2003]](images/Ariav2003_dendrites.png){width=30%}
+
+![[@ariav_submillisecond_2003]](images/Ariav2003_spatialsummation.png){width=50%}
+
+![[@ariav_submillisecond_2003]](images/Ariav2003_temporalsummationwindow.png){width=50%}
+:::
+
+## Dendrite properties (2) : Linear and non-linear computations
+
+- Same dendrite stimulation can result in non-linearity whereas that is not the case for between dendrites stimulations
+
+![[@london_dendritic_2005]](images/London2005_betweenVSwithin.png){width=30%  fig-align="center"}
+
+
+## Dendrite properties (3) : Dendritic plateau potentials
+
+-   Dendrites can integrate information over long time periods
+
+![[@antic_decade_2010]](images/Antic2010_dspikes.png){width=30% fig-align="center"}
+
+
+## Dendrite properties (4) : Dendrite hetereogeneity
+
+-   Dendrites functional properties depends on their morphology hence lots of room for variability / hetereogeneity in dendrites properties.
+
+![[@tran-van-minh_contribution_2015]](images/Tran-Van-Minh2015_dendritehetereogeneity.png){width=30% fig-align="center"}
+
+
+## Dendrites relevance to neuronal computations
+
+Case study 1: @tzilivaki_challenging_2019 - Challenging the point neuron dogma: FS basket cells as 2-stage nonlinear integrators
+
+-   Non linear dendrites in interneurons help store memories using fewer ressources
+-   Linked memory are stored in common dendrites, through synapse clustering
+
+::: {layout-ncol="3"}
+![[@tzilivaki_challenging_2019]](images/Tzilivaki2019_dendritememorytask.png){width="120%"}
+
+![[@sehgal_co-allocation_2021]](images/Sehgal2021_dendriteoverlap.png)
+
+![[@sehgal_co-allocation_2021]](images/Sehgal2021_spineaddedondendrite.png){width=60%}
+:::
+
+## Dendrites relevance to neuronal computations
+
+Case study 2: @jones_might_2021 - Might a Single Neuron Solve Interesting Machine Learning Problems Through Successive Computations on Its Dendritic Tree?
+
+-   Modelling dendrites as a sequence of thresholded linear unit solves typical ML benchmarks (non-CL scenarios)
+
+-   Benefit from having the same input onto several branches of the dendritic tree = importance of synaptic input repetition
+
+-   Performances on-par with a fully-connected neural network (FCNN)
+
+::: {layout-ncol="2"}
+![[@jones_might_2021]](images/Jones2020_ktreemodel.png)
+
+![[@jones_might_2021]](images/Jones2020_ktreemodelPerf.png)
+:::
+
+## Dendrites relevance to neuronal computations
+
+Case study 3: @grewal_going_2021 - Going Beyond the Point Neuron: Active Dendrites and Sparse Representations for Continual Learning and @iyer_avoiding_2022 - Avoiding Catastrophe: Active Dendrites Enable Multi-Task Learning in Dynamic Environments
+
+-   Adding dendrite abstractions in an MLP help preventing catastrophic forgetting both in abstract task (permutedMNIST) and reinforcement learning (RL) tasks.
+
+-   Context-driven task-specific subnetworks activation gated by dendritic inputs
+
+::: {layout-ncol="2"}
+![[@iyer_avoiding_2022]](images/Iyer2022_model.png){width=40%}
+
+![[@grewal_going_2021]](images/Grewal2021_dendritemodelaccuracy.png)
+:::
+
+## Dendrites relevance to neuronal computations
+
+Case study 3: @grewal_going_2021 - Going Beyond the Point Neuron: Active Dendrites and Sparse Representations for Continual Learning and Iyer et al. 2022 - Avoiding Catastrophe: Active Dendrites Enable Multi-Task Learning in Dynamic Environments
+
+-   Dendrite specialize in few tasks.
+
+-   Contradict the hypothesis that a dendritic neuron is equivalent to a multilayer network as classical deep networks are incapable of performing well due to catastrophic forgetting, regardless of network depth
+
+::: {layout-ncol="2"}
+![[@grewal_going_2021]](images/Iyer2022_dendritespecialization.png)
+
+![[@grewal_going_2021]](images/Iyer2022_RLperf.png)
+:::
+
+
+## Conclusion
+
+-   Dendrites' computational role is far from solved
+
+-   Neuroscience informs models design which in turn inform back neuroscience. That's a neat loop
+
+-   Depending upon the task, adding dendrites could increase computational overhead without benefits i.e. in non continual learning scenario there might be few, if any, benefits to adding dendrites
+
+-   In continual learning settings, dendrites could be a powerfull mechanism to design networks more robust to catastrophic forgetting
+
+-   There is still a lot to open ended questions here.
+
+    -   Is the computational overhead of dendrite worth the cost ?
+    -   Which are the scenarios where having dendrites is helping most to perform the task ?
+    -   What are the dendritic mechanisms that would enhance classical deep nets the most ?
+
+## Thank you  --- Questions ? {.center}
+
+# References
