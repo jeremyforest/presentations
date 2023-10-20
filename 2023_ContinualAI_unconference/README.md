@@ -4,4 +4,4 @@
 
 
 "Dendrites as a biologically inspired approach to overcome catastrophic forgetting" presentated at the 1st [Continual Learning Unconference](https://unconf.continualai.org) on October 19th 2023. 
-See 
+See https://jeremyforest.com/talk/dendrites-as-a-biologically-inspired-approach-to-overcome-catastrophic-forgetting/ 
